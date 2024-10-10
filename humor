@@ -1,0 +1,36 @@
+import socket
+from datetime import datetime
+
+# Function to scan ports on a given host
+def port_scanner(target, start_port, end_port):
+    print(f"Starting scan on {target} from port {start_port} to {end_port}")
+    start_time = datetime.now()
+    
+    try:
+        for port in range(start_port, end_port + 1):
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            socket.setdefaulttimeout(1)  # 1 second timeout
+            result = sock.connect_ex((target, port))  # returns 0 if port is open
+            if result == 0:
+                print(f"Port {port}: Open")
+            sock.close()
+    except KeyboardInterrupt:
+        print("\nScan interrupted.")
+    except socket.gaierror:
+        print("\nHostname could not be resolved.")
+    except socket.error:
+        print("\nCouldn't connect to server.")
+    
+    end_time = datetime.now()
+    total_time = end_time - start_time
+    print(f"Scanning completed in {total_time}")
+
+# Main script execution
+if __name__ == "__main__":
+    # Target input
+    target = input("Enter the IP or hostname of the target: ")
+    start_port = int(input("Enter the starting port: "))
+    end_port = int(input("Enter the ending port: "))
+    
+    # Run the port scanner
+    port_scanner(target, start_port, end_port)
